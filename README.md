@@ -1,26 +1,40 @@
 # PHP StatsD Client
 
-This is an extremely simple PHP [statsd](https://github.com/etsy/statsd.git) client and [CI spark](http://getsparks.org).
+This is a PHP [statsd](https://github.com/etsy/statsd.git) client based on 
+[work by John Crepezzi](https://github.com/seejohnrun/php-statsd).
+We refactored the library into a composer module and opened the API a bit to improve flexibility.
 
 ## Installation
-
-1.  _With Sparks_ - `$ php tools/spark install statsd`
-2.  _Without Sparks_ - Clone repository at [github.com/seejohnrun/php-statsd](https://github.com/seejohnrun/php-statsd)
-
-## Setup
-
-1.  _With Sparks_ - `$this->load->spark('statsd');`
-2.  _Without Sparks_ - `require './libraries/statsd.php';`
+`composer.json`
+```json
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/classmarkets/php-statsd"
+        }
+    ],
+    "require": {
+        "classmarkets/php-statsd": "master-dev"
+    }
+}
+```
 
 ## Usage
+### General
+
+```php
+$statsd = new \Classmarkets\Statsd;
+$statsd->send("my.favorite.numbers", 73); // see what I did there?
+```
 
 ### Counting
 
 To count things:
 
-``` php
-$stats = new StatsD();
-$stats->counting('numpoints', 123);
+```php
+$statsd = new \Classmarkets\Statsd;
+$statsd->count('sheep', 3);
 ```
 
 ### Timing
@@ -28,18 +42,20 @@ $stats->counting('numpoints', 123);
 Record timings:
 
 ``` php
-$stats = new StatsD();
-$stats->timing('timething', 123);
+$statsd = new \Classmarkets\Statsd;
+$statsd->timing('critical.query', 18);
 ```
 
-### Time Block
+Timings are given in milliseconds, see https://github.com/etsy/statsd#timing
+
+### Timing Closures
 
 And a convenience mechanism for timing:
 
-``` php
-$stats = new StatsD();
-$stats->time_this('timething', function() {
-    sleep(1);
+```php
+$statsd = new \Classmarkets\Statsd;
+$statsd->timeThis('critical.query', function() use ($db) {
+    $db->executeCriticalQuery();
 });
 ```
 
@@ -47,29 +63,46 @@ $stats->time_this('timething', function() {
 
 ### Host and Port
 
-``` php
-$stats = new StatsD('localhost', 7000); // default localhost:8125
+```php
+$statsd = new \Classmarkets\Statsd('localhost', 7000); // default localhost:8125
+```
+
+If called like this, Statsd will create a default UDP socket. 
+For more control you can also pass a socket as the third argument:
+```php
+$socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+socket_set_option($socket, SOL_SOCKET, SO_REUSEADDR, 1);
+$statsd = new \Classmarkets\Statsd('localhost', 7000, $socket); // default localhost:8125
 ```
 
 ### Sample Rate
 
 Any of the methods descriped in the usage section can take an optional third argument `$rate`, which is the sample rate:
 
-``` php
-$stats = new StatsD();
-$stats->counting('numpoints', 123, 0.1);
+```php
+$statsd = new \Classmarkets\Statsd;
+$stats->count('numpoints', 123, 0.1);
 ```
 
-## As a CodeIgniter library
+## Changes to the original library
 
-``` php
-$this->load->library('statsd');
-$this->statsd->counting('numpoints', 123);
-```
+- __BC break__ CodeIgniter support has been removed. We are not familiar with CI and thus can't guarantee for compatibility. 
+  Support may be re-added in the future.
+- __BC break__ `Statsd` has been moved to the `\Classmarkets` namespace.
+- __BC break__ Codestyle has been changed to PSR-1. `Statsd::time_this()` is now called `Statsd::timeThis()`. 
+- __BC break__ `Statsd::counting()` has been renamed to `Statsd::count()` for consistency
+- `Statsd::send()` is now `public`, allowing to send arbitrary messages to statsd,
+  like sending a batch of newline separated messages in one go.
+- Support for [gauges](https://github.com/etsy/statsd#gauges) and [sets](https://github.com/etsy/statsd#sets) has been added.
+- All messages are sent over one socket per `Statsd` instance, instead of creating a new one for each message,
+  giving a significant speed improvement when reusing the same instance.
+- The constructor now accepts an optional socket as its third argument.
+- All methods return the result of `socket_sendto()`, so client code can deal with errors if desired.
 
-## Author
+## Authors
 
-John Crepezzi - john.crepezzi@gmail.com
+- John Crepezzi <john.crepezzi@gmail.com>
+- Peter Schultz <peter.schultz@classmarkets.com>
 
 ## License
 
