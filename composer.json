@@ -1,0 +1,22 @@
+{
+    "name": "classmarkets/statsd",
+    "description": "Client and tools for statsd",
+    "authors": [
+        {
+            "name": "Peter Schultz",
+            "email": "peter.schultz@classmarkets.com"
+        }
+    ],
+    "require": {
+
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~3.7"
+    },
+    "config": {
+        "bin-dir": "bin/"
+    },
+    "autoload": {
+        "psr-0": { "Classmarkets": "lib" }
+    }
+}
