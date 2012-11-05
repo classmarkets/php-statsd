@@ -15,8 +15,26 @@ class Client implements ClientInterface
         $this->port = $port;
 
         $this->socket = $socket ?: socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-
         $this->messageLength = extension_loaded('mbstring') ? 'mb_strlen' : 'strlen';
+    }
+
+    public function timing($key, $time, $rate = 1)
+    {
+        return $this->send("$key:$time|ms", $rate);
+    }
+
+    public function timeThis($key, callable $callback, $rate = 1)
+    {
+        $begin = microtime(true);
+        $callback();
+        $time = floor((microtime(true) - $begin) * 1000);
+
+        return $this->timing($key, $time, $rate);
+    }
+
+    public function counting($key, $amount = 1, $rate = 1)
+    {
+        return $this->send("$key:$amount|c", $rate);
     }
 
     public function send($value, $rate)
