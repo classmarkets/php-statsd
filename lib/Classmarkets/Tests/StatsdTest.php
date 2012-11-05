@@ -43,6 +43,18 @@ class StatsdTest extends \PHPUnit_Framework_TestCase
         $this->expect('something.that.took.time:5|ms', 29);
     }
 
+    public function testGauge()
+    {
+        $this->client->gauge('some.arbitrary.metric', M_PI);
+        $this->expect('some.arbitrary.metric:3.1415926535898|g', 39);
+    }
+
+    public function testSet()
+    {
+        $this->client->gauge('some.uniqueness.metric', 101);
+        $this->expect('some.uniqueness.metric:101|g', 28);
+    }
+
     public function testTimingCallback()
     {
         // Not exactly sure about this. usleep() is precise enough on my system

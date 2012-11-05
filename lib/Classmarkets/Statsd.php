@@ -35,6 +35,16 @@ class Statsd
         return $this->send("$metric:$amount|c", $rate);
     }
 
+    public function gauge($metric, $value, $rate = 1)
+    {
+        return $this->send("$metric:$value|g", $rate);
+    }
+
+    public function set($metric, $value, $rate = 1)
+    {
+        return $this->send("$metric:$value|s", $rate);
+    }
+
     public function send($metric, $rate)
     {
         $message       = $this->formatMessage($metric, $rate);
