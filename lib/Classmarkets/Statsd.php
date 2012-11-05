@@ -1,7 +1,7 @@
 <?php
-namespace Classmarkets\Statsd;
+namespace Classmarkets;
 
-class Client implements ClientInterface
+class Statsd
 {
     private $host;
     private $port;

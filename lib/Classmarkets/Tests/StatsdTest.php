@@ -3,7 +3,7 @@ namespace {
 $socketSendtoArgs = array();
 }
 
-namespace Classmarkets\Statsd {
+namespace Classmarkets {
 function socket_sendto($socket, $message, $messageLength, $flags, $host, $port)
 {
     global $socketSendtoArgs;
@@ -13,11 +13,11 @@ function socket_sendto($socket, $message, $messageLength, $flags, $host, $port)
 }
 }
 
-namespace Classmarkets\Tests\Statsd {
+namespace Classmarkets\Tests {
 
-use Classmarkets\Statsd\Client;
+use Classmarkets\Statsd;
 
-class ClientTest extends \PHPUnit_Framework_TestCase
+class StatsdTest extends \PHPUnit_Framework_TestCase
 {
     public function testCount()
     {
@@ -59,7 +59,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         global $socketSendtoArgs;
         $socketSendtoArgs = array();
-        $this->client = new Client('localhost', 8125, new \StdClass);
+        $this->client = new Statsd('localhost', 8125, new \StdClass);
     }
 
     private function expect($expectedMessage, $expectedMessageLength)
