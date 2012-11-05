@@ -1,6 +1,8 @@
 {
     "name": "classmarkets/statsd",
     "description": "A simple library for interacting with a statsd server",
+    "type": "library",
+    "license": "MIT",
     "authors": [
         {
             "name": "John Crepezzi",
