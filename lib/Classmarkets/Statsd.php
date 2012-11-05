@@ -21,7 +21,7 @@ class Statsd
         return $this->send("$metric:$time|ms", $rate);
     }
 
-    public function timeThis($metric, callable $callback, $rate = 1)
+    public function timeThis($metric, \Closure $callback, $rate = 1)
     {
         $begin = microtime(true);
         $callback();
