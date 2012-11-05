@@ -1,10 +1,6 @@
 <?php
 namespace Classmarkets\Statsd;
 
-/*
- * A simple PHP class for interacting with a statsd server
- * @author John Crepezzi <john.crepezzi@gmail.com>
- */
 class Client
 {
     private $host;

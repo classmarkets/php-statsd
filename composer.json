@@ -1,7 +1,11 @@
 {
     "name": "classmarkets/statsd",
-    "description": "Client and tools for statsd",
+    "description": "A simple library for interacting with a statsd server",
     "authors": [
+        {
+            "name": "John Crepezzi",
+            "email": "john.crepezzi@gmail.com"
+        },
         {
             "name": "Peter Schultz",
             "email": "peter.schultz@classmarkets.com"
