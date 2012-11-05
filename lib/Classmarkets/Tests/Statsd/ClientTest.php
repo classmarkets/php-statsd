@@ -19,21 +19,21 @@ use Classmarkets\Statsd\Client;
 
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCounting()
+    public function testCount()
     {
-        $this->client->counting('something.countable');
+        $this->client->count('something.countable');
         $this->expect('something.countable:1|c', 23);
     }
 
     public function testIncrementByTwo()
     {
-        $this->client->counting('something.countable', 2);
+        $this->client->count('something.countable', 2);
         $this->expect('something.countable:2|c', 23);
     }
 
     public function testSampledCounting()
     {
-        $this->client->counting('something.countable', 2, .5);
+        $this->client->count('something.countable', 2, .5);
         $this->expect('something.countable:2|c|@0.5', 28);
     }
 

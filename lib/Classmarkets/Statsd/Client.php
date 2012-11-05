@@ -7,8 +7,6 @@ class Client implements ClientInterface
     private $port;
     private $socket;
 
-    private $messageLength;
-
     public function __construct($host = 'localhost', $port = 8125, $socket = null)
     {
         $this->host = $host;
@@ -18,30 +16,42 @@ class Client implements ClientInterface
         $this->messageLength = extension_loaded('mbstring') ? 'mb_strlen' : 'strlen';
     }
 
-    public function timing($key, $time, $rate = 1)
+    public function timing($metric, $time, $rate = 1)
     {
-        return $this->send("$key:$time|ms", $rate);
+        return $this->send("$metric:$time|ms", $rate);
     }
 
-    public function timeThis($key, callable $callback, $rate = 1)
+    public function timeThis($metric, callable $callback, $rate = 1)
     {
         $begin = microtime(true);
         $callback();
         $time = floor((microtime(true) - $begin) * 1000);
 
-        return $this->timing($key, $time, $rate);
+        return $this->timing($metric, $time, $rate);
     }
 
-    public function counting($key, $amount = 1, $rate = 1)
+    public function count($metric, $amount = 1, $rate = 1)
     {
-        return $this->send("$key:$amount|c", $rate);
+        return $this->send("$metric:$amount|c", $rate);
     }
 
-    public function send($value, $rate)
+    public function send($metric, $rate)
     {
-        $message = sprintf("%s|@%f", $value, $rate);
-        $messageLength = call_user_func($this->messageLength, $message);
+        $message       = $this->formatMessage($metric, $rate);
+        $messageLength = strlen($message);
 
         return socket_sendto($this->socket, $message, $messageLength, 0, $this->host, $this->port);
+    }
+
+    private function formatMessage($metric, $rate)
+    {
+        $message = $metric;
+
+        $rate = (float) $rate;
+        if (1.0 !== $rate && .0 !== $rate) {
+            $message .= "|@$rate";
+        }
+
+        return $message;
     }
 }
