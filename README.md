@@ -1,5 +1,7 @@
 # PHP StatsD Client
 
+[![Build Status](https://secure.travis-ci.org/classmarkets/php-statsd.png)](http://travis-ci.org/classmarkets/php-statsd)
+
 This is a PHP [statsd](https://github.com/etsy/statsd.git) client based on 
 [work by John Crepezzi](https://github.com/seejohnrun/php-statsd).
 We refactored the library into a composer module and opened the API a bit to improve flexibility.
