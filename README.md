@@ -17,7 +17,7 @@ We refactored the library into a composer module and opened the API a bit to imp
         }
     ],
     "require": {
-        "classmarkets/php-statsd": "~1.0"
+        "classmarkets/statsd": "~1.0"
     }
 }
 ```
