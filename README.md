@@ -23,11 +23,11 @@ We refactored the library into a composer module and opened the API a bit to imp
 ```
 
 ## Usage
-### General
+### Gauges
 
 ```php
 $statsd = new \Classmarkets\Statsd;
-$statsd->send("my.favorite.numbers", 73); // see what I did there?
+$statsd->gauge("my.favorite.numbers", 73); // see what I did there?
 ```
 
 ### Counting
